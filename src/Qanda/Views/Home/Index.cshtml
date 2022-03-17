@@ -1,0 +1,39 @@
+﻿@using Qanda.Models;
+@using Humanizer
+@model List<Question>;
+
+@{
+    ViewData["Title"] = "Ask and Answer";
+}
+
+<div class="d-flex flex-row justify-content-between mb-3">
+    <div class="dropdown">
+        Show
+        <a class="dropdown-toggle" id="filters-dropdown" data-bs-toggle="dropdown" role="button">@ViewData["CurrentFilter"]</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-filters="questions">All Questions</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-filters="answered">Answered</a>
+            <a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-filters="unanswered"></span>Unanswered</a>
+            <a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-filters="leaderboard"></span>Leaderbord</a>
+        </div>
+    </div>
+    <a class="btn btn-primary" asp-controller="Question" asp-action="AskQuestion">Ask Question</a>
+</div>
+
+<div class="">
+    @foreach (var q in Model!)
+    {
+        <div class="mb-3">
+            <h5><a asp-controller="Question" asp-action="ViewQuestion"
+                asp-route-questionId="@q.QuestionId" asp-route-questionUrl="@q.Url">@q.Title</a>
+            </h5>
+            <div class="mb-1">@q.Body.Substring(0, Math.Min(255, q.Body.Length))...</div>
+            <div class="text-muted">
+                <span class="">Posted @q.CreationDate.Humanize()</span>
+                <span class=""> by <a asp-controller="Account" asp-action="Profile" asp-route-username="@q!.Author">@q.Author</a></span>
+                <span class="float-end">@q.Answers?.Count answers</span>
+            </div>
+        </div>
+    }
+</div>

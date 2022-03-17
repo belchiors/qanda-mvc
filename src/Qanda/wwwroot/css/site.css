@@ -1,0 +1,50 @@
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: normal;
+  font-size: 16px;
+  background-color: #f8f9fa;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:not([class]):hover {
+  text-decoration: underline;
+}
+
+.card {
+  box-shadow: 0 1px 1px 0 rgb(0 0 0 / 17%);
+}
+
+.container {
+  max-width: 54rem;
+}
+
+.navbar {
+  box-shadow: 0 1px 1px 0 rgb(0 0 0 / 17%);
+}
+
+.bg-white {
+  background-color: #fff;
+}
+
+.form-container {
+  max-width: 24rem;
+}
+
+.p-24 {
+  padding: 24px;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.validation-summary {
+  display:none;
+}
+
+.validation-summary.validation-summary-errors { 
+  display: block;
+}

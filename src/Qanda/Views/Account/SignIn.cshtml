@@ -1,0 +1,32 @@
+@model Qanda.ViewModels.SignInViewModel
+@{
+    ViewData["Title"] = "Sign In";
+}
+
+<div class="text-align-center form-container mx-auto">
+    <h2 class="">Sign In</h2>
+    <p>Find the best answer to your technical questions, help others answer theirs.</p>
+</div>
+<div class="form-container card mx-auto mb-2 p-24 rounded-3">
+    <div class="alert alert-danger validation-summary" role="alert" asp-validation-summary="All"></div>
+    <form asp-controller="Account" asp-action="SignIn" method="post">
+        <div class="form-group mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" asp-for="Email" required>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Password</label>
+            <a class="float-end" asp-controller="Account" asp-action="ResetPassword">Forgot password?</a>
+            <input type="password" class="form-control" asp-for="Password" required>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" asp-for="RememberMe">
+                Remember Me
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary form-control">Sign In</button>
+    </form>
+</div>
+<div class="text-align-center">Don't have an account? <a asp-controller="Account" asp-action="SignUp">Sign Up</a></div>
+</div>
