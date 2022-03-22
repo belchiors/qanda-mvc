@@ -68,6 +68,12 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
+    name: "search",
+    pattern: "search",
+    defaults: new { controller = "Question", action = "Search" }
+);
+
+app.MapControllerRoute(
     name: "questions",
     pattern: "question/{questionId}/{questionUrl}",
     defaults: new { controller = "Question", action = "ViewQuestion" }

@@ -74,11 +74,4 @@ public class QuestionController : Controller
 
         return Redirect(Request.Headers["Referer"].ToString());
     }
-
-    public IActionResult Search(string q)
-    {
-        var suggestions = _dbContext.Questions?.Where(
-            item => item.Title!.Contains(q) || item.Body!.Contains(q));
-        return View(suggestions?.ToList());
-    }
 }

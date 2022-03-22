@@ -18,13 +18,13 @@ public class HomeController : Controller
         _dbContext = dbContext;
     }
 
-    public async Task<IActionResult> Index(string filters, int page)
+    public async Task<IActionResult> Index(string filters, int page, string q)
     {
         var currentFilter = String.IsNullOrEmpty(filters) ? "All Questions" 
             : char.ToUpper(filters[0]) + filters.Substring(1);
         ViewData["CurrentFilter"] = currentFilter;
 
-        var questions = from q in _dbContext.Questions select q;
+        var questions = from question in _dbContext.Questions select question;
         switch (filters)
         {
             case "questions":
@@ -40,7 +40,18 @@ public class HomeController : Controller
                 questions = questions.OrderByDescending(q => q.Answers.Count);
                 break;
         }
+
+        if (!String.IsNullOrEmpty(q))
+            questions = questions.Where(question 
+            => question.Title.Contains(q) || question.Body.Contains(q));
         return View(await questions.ToListAsync());
+    }
+
+    public IActionResult Search(string q)
+    {
+        var suggestions = _dbContext.Questions?.Where(
+            item => item.Title!.Contains(q) || item.Body!.Contains(q));
+        return View(suggestions.ToList());
     }
 
     public IActionResult Privacy() => View();
