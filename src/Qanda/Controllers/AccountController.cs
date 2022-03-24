@@ -25,7 +25,7 @@ public class AccountController : Controller
     public IActionResult SignIn() => View();
 
     [Authorize]
-    public async Task<IActionResult> OnSignOut()
+    public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(
             CookieAuthenticationDefaults.AuthenticationScheme
@@ -50,6 +50,7 @@ public class AccountController : Controller
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.Username!),
+            new Claim(ClaimTypes.Email, user.Email!),
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()!),
             new Claim(ClaimTypes.Role, user.Role)
         };
@@ -99,6 +100,64 @@ public class AccountController : Controller
         await _dbContext.SaveChangesAsync();
 
         return RedirectToAction("SignIn", "Account");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateEmail(SettingsViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return RedirectToAction("Settings");
+        
+        var userEmail = User.FindFirstValue(ClaimTypes.Email);
+        var currentUser = _dbContext.Users!.SingleOrDefault(u => u.Email!.Equals(userEmail));
+
+        if (!BCrypt.Net.BCrypt.Verify(model.EmailSettingsViewModel!.Password, currentUser!.PasswordHash))
+            return View("Settings");
+
+        currentUser.Email = model.EmailSettingsViewModel.NewEmail;
+        _dbContext.Users!.Update(currentUser);
+        await _dbContext.SaveChangesAsync();
+
+        return RedirectToAction("Logout");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdatePassword(SettingsViewModel model)
+    {
+        if (!ModelState.IsValid || model.PasswordSettingsViewModel!.NewPassword 
+            != model.PasswordSettingsViewModel.ConfirmPassword)
+            return RedirectToAction("Settings");
+
+        var userEmail = User.FindFirstValue(ClaimTypes.Email);
+        var currentUser = _dbContext.Users!.SingleOrDefault(u => u.Email!.Equals(userEmail));
+
+        if (!BCrypt.Net.BCrypt.Verify(model.PasswordSettingsViewModel!.CurrentPassword, currentUser!.PasswordHash))
+            return View("Settings");
+        
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(model.PasswordSettingsViewModel.NewPassword);
+        currentUser.PasswordHash = passwordHash;
+        _dbContext.Users!.Update(currentUser);
+        await _dbContext.SaveChangesAsync();
+
+        return RedirectToAction("Logout");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteAccount(string password)
+    {
+        if (!ModelState.IsValid)
+            return View("Settings");
+
+        var userEmail = User.FindFirstValue(ClaimTypes.Email);
+        var currentUser = _dbContext.Users!.SingleOrDefault(u => u.Email!.Equals(userEmail));
+
+        if (!BCrypt.Net.BCrypt.Verify(password, currentUser!.PasswordHash))
+            return View("Settings");
+
+        _dbContext.Users!.Remove(currentUser);
+        await _dbContext.SaveChangesAsync();
+
+        return RedirectToAction("Logout");
     }
 
     public IActionResult Profile(string username) => View();

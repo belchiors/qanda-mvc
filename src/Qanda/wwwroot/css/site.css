@@ -33,6 +33,14 @@ a:not([class]):hover {
   max-width: 24rem;
 }
 
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
 .p-24 {
   padding: 24px;
 }

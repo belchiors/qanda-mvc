@@ -1,6 +1,59 @@
-@model Qanda.ViewModels.SignInViewModel
+@using System.Security.Claims
+
+@model Qanda.ViewModels.SettingsViewModel
+
 @{
     ViewData["Title"] = "Account Settings";
+    string userEmail = User.FindFirstValue(ClaimTypes.Email);
 }
 
-<h1 class="title">@ViewData["Title"]</h1>
+<div class="mb-8">
+    <h2>Email</h2>
+    <div class="mb-6">
+        <p class="">Current Email</p>
+        <p class="">@userEmail</p>
+    </div>
+    <div class="alert alert-danger validation-summary" role="alert" asp-validation-summary="All"></div>
+    <form asp-controller="Account" asp-action="UpdateEmail" method="post">
+        <div class="form-group mb-3">
+           <label class="form-label">New Email</label>
+           <input class="form-control" type="email" placeholder="Enter new email" asp-for="@Model.EmailSettingsViewModel!.NewEmail" required> 
+        </div>
+        <div class="form-group mb-3">
+           <label class="form-label">Current password</label>
+           <input class="form-control" type="password" placeholder="Enter current password" asp-for="@Model.EmailSettingsViewModel!.Password" required> 
+        </div>
+        <button class="btn btn-primary" type="submit">Save Email</button>
+    </form>
+</div>
+
+<div class="mb-8">
+    <h2>Passwod</h2>
+    <div class="alert alert-danger validation-summary" role="alert" asp-validation-summary="All"></div>
+    <form asp-controller="Account" asp-action="UpdatePassword" method="post">
+        <div class="form-group mb-3">
+           <label class="form-label">Current password</label>
+           <input class="form-control" type="password" placeholder="Enter current password" asp-for="@Model.PasswordSettingsViewModel!.CurrentPassword" required> 
+        </div>
+        <div class="form-group mb-3">
+           <label class="form-label">New password</label>
+           <input class="form-control" type="password" placeholder="Enter new password" asp-for="@Model.PasswordSettingsViewModel!.NewPassword" required> 
+        </div>
+        <div class="form-group mb-3">
+           <label class="form-label">Confirm new password</label>
+           <input class="form-control" type="password" placeholder="Confirm new password" asp-for="@Model.PasswordSettingsViewModel!.ConfirmPassword" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Save Password</button>
+    </form>
+</div>
+
+<div class="">
+    <h2 class="mb-3">Delete account</h2>
+    <form asp-controller="Account" asp-action="DeleteAccount">
+        <div class="form-group mb-3">
+           <label class="form-label">Current password</label>
+           <input class="form-control" type="password" placeholder="Enter current password" name="password" required> 
+        </div>
+        <button class="btn btn-primary" type="submit">Delete account</button>
+    </form>
+</div>
